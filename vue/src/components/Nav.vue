@@ -142,21 +142,23 @@
         </li>
     </ul>
 
+    <!-- 關於本站 -->
     <ul class="nav pull-right hidden-xs">
         <li>
             <a 
                 href="about.html" 
                 title="關於本站" 
             >
-                <!-- onClick={()=> window.pressAbout()} -->
                 <span class="iconic-circle">
                     <i class="icon-info" />
                 </span>
             </a>
         </li>
     </ul>
+    <!-- 關於本站 -->
 
-    <ul class="nav pull-right hidden-xs hidden-sm web-only">
+    <!-- 幫校對 -->
+    <ul class="nav pull-right hidden-xs">
         <li>
             <a 
                 href="http://ckhis.ck.tp.edu.tw/~ljm/amis-mp/" 
@@ -168,49 +170,48 @@
             </a>
         </li>
     </ul>
+    <!-- 幫校對 -->
 
-
+    <!-- App ToolBox -->
     <ul class="nav pull-right hidden-xs">
         <li 
-            class="web-inline-only" 
-            style="display: inline-block;"
+            class="web-inline-only"
         >
             <a 
                 href="https://racklin.github.io/moedict-desktop/download.html"
+                class="font-color-gray"
                 target="_blank"
                 title="桌面版下載（可離線使用）" 
-                style="color: #ccc"
             >
                 <i class="icon-download-alt" />
             </a>
         </li>
         <li 
-            class="web-inline-only" 
-            style="display: inline-block"
+            class="web-inline-only"
         >
             <a 
                 href="https://play.google.com/store/apps/details?id=org.audreyt.dict.moe" 
+                class="font-color-gray"
                 target="_blank" 
                 title="Google Play 下載" 
-                style="color: #ccc"
             >
                 <i class="icon-android" />
             </a>
         </li>
         <li 
-            class="web-inline-only" 
-            style="display: inline-block"
+            class="web-inline-only"
         >
             <a 
                 href="https://itunes.apple.com/tw/app/meng-dian/id599429224" 
+                class="font-color-gray"
                 target="_blank" 
                 title="App Store 下載" 
-                style="color: #ccc"
             >
                 <i class="icon-apple" />
             </a>
         </li>
     </ul> 
+    <!-- App ToolBox -->
 
 </nav>
 </template>
@@ -234,8 +235,30 @@ export default {
 
 <style lang='scss' scoped>
 
-.anchor-padding{
+// 右上角各個 icon 的間距離
+.anchor-padding {
     padding-left: 5px;
     padding-right: 5px;
+}
+
+// 設定灰色的字
+.font-color-gray {
+    color: #ccc;
+}
+
+// 關於本站按鈕的 icon
+.iconic-circle {
+    background: #474;
+}
+
+@media only screen and (min-width: 768px){
+    .nav .web-inline-only {
+        display: inline-block !important;
+        
+        a {
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+    }
 }
 </style>
