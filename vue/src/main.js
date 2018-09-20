@@ -16,37 +16,43 @@ import WordList from './components/WordsList.vue'
 // mixins
 import getWordFromHashMixin from './mixins/getWordFromHash.js'
 
-window.$ = window.jQuery = require('jquery');
+// window.$ = window.jQuery = require('jquery');
 
-$.ajax({
-    url: '/s/index.json',
-    success: (data) => {
-        console.log(data);
-        store.dispatch('query/importWordIndexFile', {
-            data: data.sort()
-        })
-    },
-    error: () => {
+// $.ajax({
+//     url: '/s/index.json',
+//     success: (data) => {
+//         console.log(data);
+//         store.dispatch('query/importWordIndexFile', {
+//             data: data.sort()
+//         })
+//     },
+//     error: () => {
 
-    }
-})
+//     }
+// })
 // Public functions of components through mixin.
 
+// Web 時， 右下角 FB, Twitter, google 連結
 const links = new Vue({
     el: '#links',
     store,
     render: h => h(Links)
 });
+
+// 最上面的 nav bar
 const nav = new Vue({
     el: '#nav',
     store,
     render: h => h(Nav)
 });
+
 const queryVue = new Vue({
   el: '#query',
   store,
   render: h => h(QueryVue)
 });
+
+
 const wordList = new Vue({
     el: '#wordList',
     store,

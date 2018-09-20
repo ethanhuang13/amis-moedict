@@ -1,33 +1,46 @@
 <template lang="html">
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-  
+    
+    <!-- 左上角 Logo, width < 768px 會消失 -->
     <div class="navbar-header">
         <a class="navbar-brand brand ebas" href="./">阿美語萌典</a>
     </div>
+    <!-- 左上角 Logo, width < 768px 會消失 -->
 
+    <!-- 字典列表 -->
     <ul class="nav navbar-nav">
 
-        <li class="dropdown">
-            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        <li 
+            v-bind:class="{ open: isDictionariesShowed}"
+            class="dropdown"
+        >
+            <a 
+                @focus="isDictionariesShowed = true"
+                @blur="isDictionariesShowed = false"
+                class="dropdown-toggle" 
+                data-toggle="dropdown"
+                href="#" 
+            >
                 <i class="icon-book">&nbsp;</i>
                 <span 
                     class="lang-active" 
                     style="margin:0;padding:0"
                     itemProp="articleSection"
                 >
-                  方敏英字典
+                  {{ dictionaries[dictionaryIndex] }}
                 </span>
                 <b class="caret"></b>
             </a>
-            <ul class="dropdown-menu" role="navigation" data-reactid=".3.1.0.1">
-                <li role="presentation" data-reactid=".3.1.0.1.$##">
-                    <a class="p lang-option false" role="false" href="##" data-reactid=".3.1.0.1.$##.0">方敏英字典</a>
-                </li>
-                <li role="presentation" data-reactid=".3.1.0.1.$#!">
-                    <a class="m lang-option false" role="false" href="#!" data-reactid=".3.1.0.1.$#!.0">潘世光阿法</a>
-                </li>
-                <li role="presentation" data-reactid=".3.1.0.1.$#=2">
-                    <a class="s lang-option false" role="false" href="#:" data-reactid=".3.1.0.1.$#=2.0">蔡中涵大辭典</a>
+            <ul class="dropdown-menu" role="navigation">
+                <li 
+                    v-for="(dictionary, index) in dictionaries"
+                    role="presentation"
+                >
+                    <a 
+                        @focus="dictionaryIndex = index"
+                        class="p lang-option false" 
+                        role="false" 
+                        href="##">{{dictionary}}</a>
                 </li>
             </ul>
         </li>
@@ -48,7 +61,12 @@
             </a>
         </li>
 
-        <li id="btn-moedict-desktop-addons">
+        <!-- 
+            下載擴充套件 不確定什麼時候會顯示， 
+            也許是手機版⋯⋯？
+            都先註解掉
+         -->
+        <!-- <li id="btn-moedict-desktop-addons">
             <a 
                 href="https://racklin.github.io/moedict-desktop/addon.html" 
                 class="anchor-padding" 
@@ -57,7 +75,7 @@
                 <i class="icon-download-alt" />
             </a>
         </li>
-        <!-- 
+        
             { 
                 window.isMoedictDesktop && 
                 <li id="btn-moedict-desktop-addons">
@@ -71,6 +89,7 @@
                 </li> 
             }
         -->
+        <!-- 下載擴充套件 -->
 
         <li 
             class="resize-btn app-only" 
@@ -110,6 +129,7 @@
             </a>
         </li>
     </ul>
+    <!-- 字典列表 -->
 
     <ul class="nav pull-right hidden-xs">
         <li id="btn-pref" title="偏好設定">
@@ -197,15 +217,22 @@
 
 <script>
 export default {
-  data () {
-    return {
-      // message: 'Helo, Vue.js 2.0'
+    data () {
+        return {
+            dictionaries: [
+                '方敏英字典',
+                '潘世光阿法',
+                '蔡中涵大辭典'
+            ],
+            dictionaryIndex: 0,
+            isDictionariesShowed: false
+        }
     }
-  }
+
 }
 </script>
 
-<style lang='css'>
+<style lang='scss' scoped>
 
 .anchor-padding{
     padding-left: 5px;
