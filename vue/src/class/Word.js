@@ -41,7 +41,7 @@ export default class Word {
     constructor(data) {
         this.definitions = ArrayParseFactory(Definition, data.h[0].d)
         this.stem = data.stem;
-        this.tag = data.tag;
+        this.tag = data.tag || '';
         this.word = data.t;
     }
 }

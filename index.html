@@ -64,7 +64,16 @@
     <div class="results">
       <div id="strokes" style="display: none"></div>
       <div id="result" class="result">
-        <center style="font-size: 30px; margin-top: 40px; margin-bottom: 40px"><span id="loading"></span><br><br><img title="〔萌典〕" src="images/icon.png" width="100" class="logo"><br><br><span id="F9868" style="font-family: &quot;MOEDICT&quot;; margin-botom: 40px"></span><i class="icon-spinner"></i></center>
+        <center style="font-size: 30px; margin-top: 40px; margin-bottom: 40px">
+          <span id="loading"></span>
+          <br>
+          <br>
+          <img title="〔萌典〕" src="images/icon.png" width="100" class="logo">
+          <br>
+          <br>
+          <span id="F9868" style="font-family: &quot;MOEDICT&quot;; margin-botom: 40px"></span>
+          <i class="icon-spinner"></i>
+        </center>
       </div>
       <div id="links"></div>
     </div>
@@ -72,17 +81,22 @@
     <div id="nav"></div>
     <div id="query-box" class="query-box">
       <input id="query" type="search" style="display: none" autofocus="" autocomplete="off" placeholder="請輸入欲查詢的字詞" class="query">
-      <div id="timeline" style="position: absolute; top: 70px; right: 5px; left: 10px; bottom: 20px" class="hidden-xs">
+      
+      <!-- 
+        把這段都移到 id="query" 的 Vue 裡了
+        <div id="timeline" style="position: absolute; top: 70px; right: 5px; left: 10px; bottom: 20px" class="hidden-xs">
         <div id="wordList"></div>
         <div data-href="https://www.facebook.com/amis.moedict" data-width="240" data-height="768" data-small-header="true" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="true" data-show-posts="true" style="height: 100%; width: 100%" class="fb-page">
           <div class="fb-xfbml-parse-ignore">
             <blockquote cite="https://www.facebook.com/amis.moedict"><a href="https://www.facebook.com/amis.moedict" style="visibility: hidden">阿美語萌典 FB 專頁</a></blockquote>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div id="user-pref"></div>
+    <!--
     <a href="#" onclick="pressBack(); return false" class="back-box app-only"><i style="color: #6B0000" class="icon-chevron-left"></i></a><a href="#" onclick="pressErase(); return false" class="erase-box mobile-only"><i style="color: #c0c0c0" title="清除搜尋框" class="icon-remove-sign"></i></a>
+    -->
     <div id="moe" style="display: none"></div>
     <script src="cordova.js" data-cfasync="true" charset="utf-8"></script>
     <script src="js/es5-shim.js" charset="utf-8"></script>
@@ -90,6 +104,7 @@
     <script src="js/deps.js" charset="utf-8"></script>
     <div id="fb-root"></div>
     <script>
+      // 讓 FB 粉專出現的代碼
       (function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;

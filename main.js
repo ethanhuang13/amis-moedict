@@ -319,7 +319,9 @@
         }
         return;
       }
+      // 停止正在播放中的聲音檔案
       stopAudio();
+
       seq++;
       $(el).attr('id', "player-" + seq);
       $el = getEl();
@@ -332,6 +334,8 @@
       if (/(ogg|opus)$/.exec(url) && canPlayMp3() && !isGecko) {
         urls.unshift(url.replace(/(ogg|opus)$/, 'mp3'));
       }
+      
+      // 使用 howler.js 播放聲音檔。
       audio = new window.Howl({
         buffer: true,
         urls: urls,
@@ -348,6 +352,8 @@
     if (window.Howl) {
       return play();
     }
+
+    // 動態載入 howler js, 用於播放聲音檔案的函式庫
     return getScript('js/howler.js', function(){
       return play();
     });
@@ -1055,9 +1061,13 @@
           window.scrollTo(0, 0);
           return strokeWords(replace$.call($('h1:first').data('title'), /[（(].*/, ''));
         });
+
+        // 點擊 查詢結果play 播聲音檔案
         $('.results .playAudio').click(function(){
           return window.playAudio(this, $(this).find("meta[itemprop='contentURL']").attr('content'));
         });
+
+
         if (isCordova && !DEBUGGING) {
           try {
             navigator.splashscreen.hide();
@@ -1694,10 +1704,15 @@
     };
   });
   LoadedScripts = {};
+
+  // 動態載入 Script
   function getScript(src, cb){
+    // 如果已經載入該 Script， 直接執行 callback
     if (LoadedScripts[src]) {
       return cb();
     }
+
+    // 如果未載入該 Script，將 flag 設置為 true 並用 ajax 載入該 script
     LoadedScripts[src] = true;
     return $.ajax({
       type: 'GET',
@@ -1708,6 +1723,8 @@
       complete: cb
     });
   }
+
+
   function import$(obj, src){
     var own = {}.hasOwnProperty;
     for (var key in src) if (own.call(src, key)) obj[key] = src[key];

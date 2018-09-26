@@ -14,12 +14,13 @@
             v-bind:class="{ open: isDictionariesShowed}"
             class="dropdown"
         >
+            <!-- 目前的辭典 -->
             <a 
                 @focus="isDictionariesShowed = true"
                 @blur="isDictionariesShowed = false"
                 class="dropdown-toggle" 
                 data-toggle="dropdown"
-                href="#" 
+                href="javascript:void(0)"
             >
                 <i class="icon-book">&nbsp;</i>
                 <span 
@@ -27,22 +28,30 @@
                     style="margin:0;padding:0"
                     itemProp="articleSection"
                 >
-                  {{ dictionaries[dictionaryIndex] }}
+                  {{ $store.state.CONFIG.currentDict.NAME }}
                 </span>
                 <b class="caret"></b>
             </a>
+            <!-- 目前的辭典 -->
+
+            <!-- 所有辭典列表 -->
             <ul class="dropdown-menu" role="navigation">
                 <li 
                     v-for="(dictionary, index) in dictionaries"
                     role="presentation"
                 >
-                    <a 
-                        @focus="dictionaryIndex = index"
+                    <a  
+                        @focus="changeHash(`#${dictionary.HASH_FLAG}`)"
                         class="p lang-option false" 
                         role="false" 
-                        href="##">{{dictionary}}</a>
+                        href="javascript:void(0)"
+                    >
+                        {{dictionary.NAME}}
+                    </a>
                 </li>
             </ul>
+            <!-- 所有辭典列表 -->
+
         </li>
 
         <li 
@@ -217,17 +226,23 @@
 </template>
 
 <script>
+import * as DICT from '../const/dictionary';
+
 export default {
     data () {
         return {
             dictionaries: [
-                '方敏英字典',
-                '潘世光阿法',
-                '蔡中涵大辭典'
+                DICT.FANG_MIN_YING,
+                DICT.PAN_SHI_GUANG,
+                DICT.CAI_ZHONG_HAN
             ],
-            dictionaryIndex: 0,
             isDictionariesShowed: false
         }
+    },
+    methods: {
+        changeHash(hash) {
+            window.location.hash = hash
+        },
     }
 
 }

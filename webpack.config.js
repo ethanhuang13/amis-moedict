@@ -29,9 +29,9 @@ module.exports = {
     mode: 'development',
     entry: entries.concat([
         './vue/src/main.js',
-        './js/jquery-ui-1.10.4.custom.min.js',
-        './js/jquery.hoverIntent.js',
-        './js/bootstrap/dropdown.js',
+        // './js/jquery-ui-1.10.4.custom.min.js',
+        // './js/jquery.hoverIntent.js',
+        // './js/bootstrap/dropdown.js',
         './js/phantomjs-shims.js',
         './js/console-polyfill.js',
     ]),

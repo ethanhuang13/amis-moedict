@@ -1,6 +1,9 @@
 <template>
     <div id="result" class="result prefer-pinyin-true">
-        <div style="display:inline;" data-reactid=".0">
+        <div
+            v-if="$store.state.CONFIG.currentWord" 
+            style="display:inline;" 
+        >
             <div style="display:inline;" data-reactid=".0.$0">
                 <meta itemprop="image" content="''ayaman.png" data-reactid=".0.$0.0">
                 <meta itemprop="name" content="''ayaman" data-reactid=".0.$0.1">
@@ -32,15 +35,29 @@
                         <a 
                             class="xref" 
                             :href="'./#:' + word.stem" 
-                            data-reactid=".0.$0.4.1.$'ayam"
                         >
                             (詞幹:{{ word.stem }})
                         </a>
                     </small>
-                    <i itemtype="http://schema.org/AudioObject" class="icon-play playAudio" data-reactid=".0.$0.4.2">
-                        <meta itemprop="name" content="''ayaman.wav" data-reactid=".0.$0.4.2.0">
-                        <meta itemprop="contentURL" content="https://服務.意傳.台灣/%E6%96%87%E6%9C%AC%E7%9B%B4%E6%8E%A5%E5%90%88%E6%88%90?%E6%9F%A5%E8%A9%A2%E8%85%94%E5%8F%A3=Pangcah&amp;%E6%9F%A5%E8%A9%A2%E8%AA%9E%E5%8F%A5=''ayaman" data-reactid=".0.$0.4.2.1">
+
+                    <!-- 播放音檔 icon -->
+                    <i 
+                        @click="clickAudioIcon()"
+                        itemtype="http://schema.org/AudioObject" 
+                        class="playAudio" 
+                        :class="getPlayIcon"
+                    >
+                        <meta 
+                            itemprop="name" 
+                            content="''ayaman.wav" 
+                        >
+                        <meta 
+                            itemprop="contentURL" 
+                            content="https://服務.意傳.台灣/%E6%96%87%E6%9C%AC%E7%9B%B4%E6%8E%A5%E5%90%88%E6%88%90?%E6%9F%A5%E8%A9%A2%E8%85%94%E5%8F%A3=Pangcah&amp;%E6%9F%A5%E8%A9%A2%E8%AA%9E%E5%8F%A5=''ayaman" 
+                        >
                     </i>
+                    <!-- 播放音檔 icon -->
+
                 </h1>
                 <div class="entry" itemprop="articleBody" data-reactid=".0.$0.6">
                     <div class="entry-item" data-reactid=".0.$0.6.$0">
@@ -88,37 +105,74 @@
 </template>
 
 <script>
-import getWordFromHashMixin from '../mixins/getWordFromHash.js'
-
 // class 
 import Word from '../class/Word.js';
+
+// constant
+import * as MEDIA from '../const/player';
+
 export default {
-    mixins: [getWordFromHashMixin],
-    watch: {
-        '$route' (to, from) {
-            const currentWord = this.getWordFromHash();
-            $.ajax({
-                url: `/s/${currentWord}.json`,
-                success: (data) => {
-                    console.log(JSON.stringify(data))
-                    this.word = new Word(data)
-                },
-                error: () => {
+    computed: {
+        
+        /**
+         * 按照播放器的狀態，顯示適合的 Icon class
+         */
+        getPlayIcon() {
+            let output = 'icon-play';
+            switch (this.$store.state.AudioPlayer.status) {
+                // 播放器讀取狀態時， icon 要顯示「讀取」
+                case MEDIA.STATUS.LOADING:
+                    output = 'icon-spinner'
+                    break;
 
-                }
-            })
+                // 播放器播放狀態時， icon 要顯示「停止」
+                case MEDIA.STATUS.PLAYING:
+                    output = 'icon-stop'
+                    break;
+                    
+            }
+            return output;
+        },
+        
+        /**
+         * 當前查詢的詞。
+         * 因為從 $store 取太長了，用 computed 取 align。
+         */
+        word() {
+            return this.$store.state.CONFIG.currentWord
+        }
 
-            
-        // react to route changes...
+
+    },
+    methods: {
+        /**
+         * 點擊 文字旁邊的 Icon 會觸發的 method
+         */
+        clickAudioIcon() {
+            switch (this.$store.state.AudioPlayer.status) {
+                // 播放器停止時， Icon 為播放。點擊時要觸發「播放」事件。
+                case MEDIA.STATUS.STOP:
+                    this
+                        .$store
+                        .dispatch(
+                            'AudioPlayer/play', 
+                            this.$store.state.CONFIG.currentWord.word
+                        )
+                    break;
+
+                // 播放器播放時， Icon 為停止。點擊時要觸發「停止」事件。
+                case MEDIA.STATUS.PLAYING:
+                    this.$store.dispatch('AudioPlayer/stop')
+                    break;
+                    
+            }
         }
     },
-    data() {   
+    data() {
         return {
-            word: new Word({"h":[{"d":[{"f":"阿美語的輔音之一。屬舌面後清擦音，音值 [ x ]。x 在阿美語中出現頻率不多，在詞尾位置時有輕微送氣現象。"}]}],"t":"x"})
+            isPlaying: false,
         }
     },
-    mounted() {
-    }
 }
 </script>
 
