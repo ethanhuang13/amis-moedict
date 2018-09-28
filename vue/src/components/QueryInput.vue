@@ -1,5 +1,9 @@
 <template lang="html">
-<div>
+<div 
+    :style="{ background: $store.state.CONFIG.currentDict.THEME.COLOR.QUERY_BG }"
+    id="query-box" 
+    class="query-box"
+>
     <!-- 查詢 Input -->
     <input 
         @click.once="fadeInFacebookPanel"
@@ -38,9 +42,9 @@
         </a>
     </div>
 
+    <!-- 按照 input 查詢的字詞結果列表 Start -->
     <div id="timeline" class="hidden-xs">
         
-        <!-- 按照 input 的內容顯示的字詞列表 -->
         <div v-if="inputedString">
             <ul 
                 class="
@@ -61,8 +65,8 @@
                     role="presentation"
                 >
                     <a 
-                        class="ui-corner-all" 
                         :href="`#${$store.state.CONFIG.currentDict.HASH_FLAG}${item}`"
+                        class="ui-corner-all" 
                     >
                         {{ item }}
                     </a>
@@ -109,6 +113,7 @@
         <!-- Facebook 粉絲頁 -->
 
     </div>
+    <!-- 按照 input 查詢的字詞結果列表 End -->
 </div>    
 </template>
 

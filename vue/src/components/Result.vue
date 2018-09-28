@@ -1,13 +1,29 @@
+## 搜尋結果
 <template>
     <div id="result" class="result prefer-pinyin-true">
+        <!-- 字詞記錄簿 Start -->
+        <WordHistory
+            v-if="$store.state.CONFIG.currentWord.word === ROUTE.WORD_HISTORY" 
+        ></WordHistory>
+        <!-- 字詞記錄簿 End -->
+
+        <!-- 非字詞記錄簿 Start -->
         <div
-            v-if="$store.state.CONFIG.currentWord" 
-            style="display:inline;" 
-        >
+            v-else-if="$store.state.CONFIG.currentWord" 
+            style="display:inline;" >
             <div style="display:inline;" data-reactid=".0.$0">
                 <meta itemprop="image" content="''ayaman.png" data-reactid=".0.$0.0">
                 <meta itemprop="name" content="''ayaman" data-reactid=".0.$0.1">
-                <i class="star iconic-color icon-bookmark-empty" title="加入字詞記錄簿" data-reactid=".0.$0.2"></i>
+                
+                <!-- 加入字詞記錄簿 Start -->
+                <i 
+                    @click="clickRecordWord(word.word)"
+                    :style="{ color: $store.state.CONFIG.currentDict.THEME.COLOR.FONT }"
+                    :class="{'icon-bookmark-empty': !isInRecorded}"
+                    class="star iconic-color icon-bookmark" 
+                    title="加入字詞記錄簿"
+                ></i>
+                <!-- 加入字詞記錄簿 Icon End -->
                 
                 <div 
                     v-if="word.tag"
@@ -18,7 +34,7 @@
                     </span>
                 </div>
                 
-                <h1 class="title" data-title="''ayaman" data-reactid=".0.$0.4" style="visibility: visible;">
+                <h1 class="title" data-title="''ayaman" style="visibility: visible;">
                     <span data-reactid=".0.$0.4.0">
                         <div 
                             class="stroke" 
@@ -30,7 +46,6 @@
                     <small
                         v-if="word.stem"
                         class="youyin" 
-                        data-reactid=".0.$0.4.1"
                     >
                         <a 
                             class="xref" 
@@ -59,23 +74,21 @@
                     <!-- 播放音檔 icon -->
 
                 </h1>
-                <div class="entry" itemprop="articleBody" data-reactid=".0.$0.6">
-                    <div class="entry-item" data-reactid=".0.$0.6.$0">
-                        <ol data-reactid=".0.$0.6.$0.0">
+                <div class="entry" itemprop="articleBody">
+                    <div class="entry-item" >
+                        <ol>
                             <li 
                                 v-for="(def, index) in word.definitions"
                                 :key="index"
-                                data-reactid=".0.$0.6.$0.0.$0"
                             >
-                                <p class="definition" data-reactid=".0.$0.6.$0.0.$0.0">
-                                    <span class="def" data-reactid=".0.$0.6.$0.0.$0.0.$0">
+                                <p class="definition">
+                                    <span class="def">
                                         {{def.meaning}}
                                     </span>
                                     <span 
                                         v-for="(example, index) in def.exampleStatements"
                                         :key="index"
                                         class="example" 
-                                        data-reactid=".0.$0.6.$0.0.$0.0.$example=10"
                                     >
                                         <span class="amisnative">
                                             <template
@@ -101,6 +114,7 @@
                 </div>
             </div>
         </div>
+        <!-- 非字詞記錄簿 End -->
     </div>
 </template>
 
@@ -108,10 +122,18 @@
 // class 
 import Word from '../class/Word.js';
 
+// Component
+import WordHistory from './WordHistory.vue';
+
 // constant
 import * as MEDIA from '../const/player';
+import { LOCAL_STORAGE } from '../const/local-storage';
+import { ROUTE } from '../const/route-path';
 
 export default {
+    components: {
+        WordHistory
+    },
     computed: {
         
         /**
@@ -132,6 +154,18 @@ export default {
                     
             }
             return output;
+        },
+
+        isInRecorded() {
+            const currentDictName = this.$store.state.CONFIG.currentDict.NAME;
+            return this
+                .$store
+                .state
+                .Storage
+                .Local
+                [currentDictName]
+                [LOCAL_STORAGE.KEY.WORD_RECORDED]
+                [this.word.word]
         },
         
         /**
@@ -166,11 +200,25 @@ export default {
                     break;
                     
             }
-        }
+        },
+        clickRecordWord(word) {
+            if (this.isInRecorded) {
+                // 已經加入字詞簿，被點擊要從字詞簿移除
+                this
+                    .$store
+                    .dispatch('Storage/Local/removeRecorded', word);
+            } else { 
+                // 未加入字詞簿，被點擊要加入字詞簿
+                this
+                    .$store
+                    .dispatch('Storage/Local/setRecorded', word);
+            }
+        },
     },
     data() {
         return {
             isPlaying: false,
+            ROUTE: ROUTE
         }
     },
 }

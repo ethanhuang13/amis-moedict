@@ -6,7 +6,10 @@ import { Howl } from 'howler'
 import Word from '../class/Word.js';
 
 // constant
+import * as DICT from '../const/dictionary';
+import { LOCAL_STORAGE } from '../const/local-storage';
 import * as MEDIA from '../const/player';
+import { ROUTE } from '../const/route-path';
 
 Vue.use(Vuex)
 
@@ -81,14 +84,20 @@ const CONFIG = {
          * 改變目前的查詢的 字詞
          */
         changeWord: ({state, commit}, word) => {
-            // 從 json 取得新的詞表
-            Vue
-                .http
-                .get(`/${state.currentDict.FILE_PATH}/${word}.json`)
-                .then((res) => {
-                    // 更新查詢的詞
-                    commit('changeWord', new Word(res.body))
-                })
+            
+            // 字詞記錄簿
+            if (word === ROUTE.WORD_HISTORY) {
+                commit('changeWord', new Word(word))
+            } else { // 從 json 取得新的詞表
+                Vue
+                    .http
+                    .get(`/${state.currentDict.FILE_PATH}/${word}.json`)
+                    .then((res) => {
+                        // 更新查詢的詞
+                        commit('changeWord', new Word(res.body))
+                    })
+            }
+
         } 
     },
 
@@ -194,9 +203,89 @@ const AudioPlayer = {
 
 }
 
+/**
+ * 包裝 Browser 的 localStorage
+ */
+const getItem = (key) => {
+    return JSON.parse(
+        localStorage.getItem(key)
+    ) || {}
+};
+
+const Storage = {
+
+    namespaced: true,  
+
+    modules: {
+
+        Local: {
+
+            namespaced: true,
+
+            actions: {
+                removeRecorded({state, commit, dispatch, rootState}, word) {
+                    const currentDictName = rootState.CONFIG.currentDict.NAME;
+                    commit('removeRecorded', {
+                        currentDictName,
+                        word
+                    });
+                },
+                setRecorded({state, commit, dispatch, rootState}, word) {
+                    const currentDictName = rootState.CONFIG.currentDict.NAME;
+                    commit('setRecorded', {
+                        currentDictName,
+                        word
+                    });
+                },
+            },
+            state: {
+                [DICT.CAI_ZHONG_HAN.NAME]: {
+                    [LOCAL_STORAGE.KEY.WORD_RECORDED]: getItem(DICT.CAI_ZHONG_HAN.NAME + LOCAL_STORAGE.KEY.WORD_RECORDED),
+                    [LOCAL_STORAGE.KEY.WORD_RECENT]: getItem(DICT.CAI_ZHONG_HAN.NAME + LOCAL_STORAGE.WORD_RECENT),
+                },
+                [DICT.FANG_MIN_YING.NAME]: {
+                    [LOCAL_STORAGE.KEY.WORD_RECORDED]: getItem(DICT.FANG_MIN_YING.NAME + LOCAL_STORAGE.KEY.WORD_RECORDED),
+                    [LOCAL_STORAGE.KEY.WORD_RECENT]: getItem(DICT.FANG_MIN_YING.NAME + LOCAL_STORAGE.KEY.WORD_RECENT),
+                },
+                [DICT.PAN_SHI_GUANG.NAME]: {
+                    [LOCAL_STORAGE.KEY.WORD_RECORDED]: getItem(DICT.PAN_SHI_GUANG.NAME + LOCAL_STORAGE.KEY.WORD_RECORDED),
+                    [LOCAL_STORAGE.KEY.WORD_RECENT]: getItem(DICT.PAN_SHI_GUANG.NAME + LOCAL_STORAGE.KEY.WORD_RECENT),
+                },    
+            },
+
+            getters: {
+                get(state, getters, rootState) {
+                    return (type) => {
+                        return state[rootState.CONFIG.currentDict.NAME][type];
+                    }
+                }
+            },
+
+            mutations: {
+                removeRecorded(state,  {currentDictName, word}) {
+                    const temp = state[currentDictName][LOCAL_STORAGE.KEY.WORD_RECORDED];
+                    Vue.delete(temp, word)
+                    localStorage.setItem(currentDictName + LOCAL_STORAGE.KEY.WORD_RECORDED , JSON.stringify(temp));
+                },
+                setRecorded(state,  {currentDictName, word}) {
+                    const temp = state[currentDictName][LOCAL_STORAGE.KEY.WORD_RECORDED];
+                    delete temp[word];
+                    Vue.set(temp, word, word)
+                    localStorage.setItem(currentDictName + LOCAL_STORAGE.KEY.WORD_RECORDED , JSON.stringify(temp));
+                },
+            }
+        }
+    }
+
+}
+
 export default new Vuex.Store({
+    namespaced: true,
     modules: {
         CONFIG,
-        AudioPlayer
-    }
+        AudioPlayer,
+        Storage
+    },
+    // 嚴格模式，禁止直接修改 state
+    strict: true
 })

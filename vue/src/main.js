@@ -22,6 +22,7 @@ Vue.use(VueResource);
 // init 
 (function () {
     // add hashchange listener ( 'coz there isn't vue router )
+    // 使用 Vue router hash 模式時，url 會變成 http://{domain_name}/#/xxx
     window.onhashchange = (hashEvent) => {
         const hash = window.location.hash;
         
@@ -52,11 +53,12 @@ Vue.use(VueResource);
             // ⋯⋯流程要再修正。
             store.dispatch('CONFIG/changeDict', dict)
         } else if (word) {
-            // 如果字典沒有變化，觸發改變找查的字詞
+            // 如果字典沒有變化，觸發找查的字詞
             store.dispatch('CONFIG/changeWord', word)
         }
     }
 
+    // 主動觸發一次 hashchange event.
     window.dispatchEvent(new Event('hashchange'));
     
     // 字詞查詢結果顯示區域
@@ -82,7 +84,7 @@ Vue.use(VueResource);
 
     // 查詢 Input
     const queryVue = new Vue({
-        el: '#query',
+        el: '#query-box',
         store,
         render: h => h(QueryVue)
     });

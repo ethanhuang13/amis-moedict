@@ -39,9 +39,13 @@ class SampleStatement {
 
 export default class Word {
     constructor(data) {
-        this.definitions = ArrayParseFactory(Definition, data.h[0].d)
-        this.stem = data.stem;
-        this.tag = data.tag || '';
-        this.word = data.t;
+        if (typeof data === 'string' ) {
+            this.word = data;
+        } else {
+            this.definitions = ArrayParseFactory(Definition, data.h[0].d)
+            this.stem = data.stem;
+            this.tag = data.tag || '';
+            this.word = data.t;
+        }
     }
 }
