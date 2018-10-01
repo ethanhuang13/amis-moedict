@@ -83,9 +83,9 @@ const CONFIG = {
         /**
          * 改變目前的查詢的 字詞
          */
-        changeWord: ({state, commit}, word) => {
+        changeWord: ({state, commit, rootState}, word) => {
             
-            // 字詞記錄簿
+            // url hash to 字詞記錄簿
             if (word === ROUTE.WORD_HISTORY) {
                 commit('changeWord', new Word(word))
             } else { // 從 json 取得新的詞表
@@ -95,6 +95,10 @@ const CONFIG = {
                     .then((res) => {
                         // 更新查詢的詞
                         commit('changeWord', new Word(res.body))
+                        commit('Storage/Local/setRecently', {
+                            word: word,
+                            currentDictName: state.currentDict.NAME
+                        }, { root: true })
                     })
             }
 
@@ -223,14 +227,14 @@ const Storage = {
             namespaced: true,
 
             actions: {
-                removeRecorded({state, commit, dispatch, rootState}, word) {
+                removeRecorded({commit, rootState}, word) {
                     const currentDictName = rootState.CONFIG.currentDict.NAME;
                     commit('removeRecorded', {
                         currentDictName,
                         word
                     });
                 },
-                setRecorded({state, commit, dispatch, rootState}, word) {
+                setRecorded({commit, rootState}, word) {
                     const currentDictName = rootState.CONFIG.currentDict.NAME;
                     commit('setRecorded', {
                         currentDictName,
@@ -267,11 +271,23 @@ const Storage = {
                     Vue.delete(temp, word)
                     localStorage.setItem(currentDictName + LOCAL_STORAGE.KEY.WORD_RECORDED , JSON.stringify(temp));
                 },
+                removeRecently(state,  {currentDictName, word}) {
+                    const temp = state[currentDictName][LOCAL_STORAGE.KEY.WORD_RECENT];
+                    delete temp[word];
+                    Vue.set(temp, word, word)
+                    localStorage.setItem(currentDictName + LOCAL_STORAGE.KEY.WORD_RECENT , JSON.stringify(temp));
+                },
                 setRecorded(state,  {currentDictName, word}) {
                     const temp = state[currentDictName][LOCAL_STORAGE.KEY.WORD_RECORDED];
                     delete temp[word];
                     Vue.set(temp, word, word)
                     localStorage.setItem(currentDictName + LOCAL_STORAGE.KEY.WORD_RECORDED , JSON.stringify(temp));
+                },
+                setRecently(state,  {currentDictName, word}) {
+                    const temp = state[currentDictName][LOCAL_STORAGE.KEY.WORD_RECENT];
+                    delete temp[word];
+                    Vue.set(temp, word, word)
+                    localStorage.setItem(currentDictName + LOCAL_STORAGE.KEY.WORD_RECENT , JSON.stringify(temp));
                 },
             }
         }

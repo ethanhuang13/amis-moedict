@@ -3,13 +3,13 @@
     <div id="result" class="result prefer-pinyin-true">
         <!-- 字詞記錄簿 Start -->
         <WordHistory
-            v-if="$store.state.CONFIG.currentWord.word === ROUTE.WORD_HISTORY" 
+            v-if="word.word === ROUTE.WORD_HISTORY" 
         ></WordHistory>
         <!-- 字詞記錄簿 End -->
 
         <!-- 非字詞記錄簿 Start -->
         <div
-            v-else-if="$store.state.CONFIG.currentWord" 
+            v-else-if="word" 
             style="display:inline;" >
             <div style="display:inline;" data-reactid=".0.$0">
                 <meta itemprop="image" content="''ayaman.png" data-reactid=".0.$0.0">
@@ -173,7 +173,7 @@ export default {
          * 因為從 $store 取太長了，用 computed 取 align。
          */
         word() {
-            return this.$store.state.CONFIG.currentWord
+            return this.$store.state.CONFIG.currentWord || {};
         }
 
 
