@@ -13,7 +13,8 @@
   window.React = React;
   if (!window.PRERENDER_LANG) {
     $(function(){
-      return React.View.result = React.render(React.View.Result(), $('#result')[0]);
+      console.log("React View is: ", React.View.Result)
+      return React.View.result = React.render(<React.View.Result />, $('#result')[0]);
     });
   }
   LANG = STANDALONE || window.PRERENDER_LANG || getPref('lang') || 's';
