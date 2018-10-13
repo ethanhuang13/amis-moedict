@@ -1,6 +1,9 @@
+import Res from './components/Result.jsx';
+
 (function(){
   var isCordova, isMoedictDesktop, DEBUGGING, ref$, STANDALONE, ref1$, any, map, unique, React, LANG, MOEID, XREFLABELOF, TITLEOF, HASHOF, STARRED, key, LRU, res$, isQuery, isDroidGap, isDeviceReady, isMobile, isApp, isWebKit, isGecko, isChrome, isPrerendered, widthIsXs, entryHistory, INDEX, STEM, CH_STEM_MAPPING, XREF, CACHED, addToLru, GET, e, playing, player, seq, getEl, callLater, MOE, han_amis_lookup, SIMPTRAD, httpMap, LoadedScripts, split$ = ''.split, replace$ = ''.replace, join$ = [].join;
   window.isCordova = isCordova = !/^https?:/.test(document.URL) && !/^http:\/\/localhost/.test(document.URL);
+  let Result = Res;
   if (window.moedictDesktop) {
     window.isMoedictDesktop = isMoedictDesktop = true;
   }
@@ -13,8 +16,8 @@
   window.React = React;
   if (!window.PRERENDER_LANG) {
     $(function(){
-      console.log("React View is: ", React.View.Result)
-      return React.View.result = React.render(<React.View.Result />, $('#result')[0]);
+      console.log("React View is: ", typeof Result);
+      return React.View.result = React.render(<Result />, $('#result')[0]);
     });
   }
   LANG = STANDALONE || window.PRERENDER_LANG || getPref('lang') || 's';
@@ -793,7 +796,7 @@
       $('iframe').fadeIn('fast');
       $('.lang-active').text($(".lang-option." + LANG + ":first").text());
       setPref('lang', LANG);
-      for (i$ = 0, len$ = (ref$ = ((ref1$ = React.View.result) != null ? ref1$.props.xrefs : void 8) || []).length; i$ < len$; ++i$) {
+      for (i$ = 0, len$ = (ref$ = ((ref1$ = Result) != null ? ref1$.props.xrefs : void 8) || []).length; i$ < len$; ++i$) {
         ref2$ = ref$[i$], lang = ref2$.lang, words = ref2$.words;
         if (lang === LANG) {
           id || (id = words[0]);
@@ -947,11 +950,9 @@
         });
       });
       id = it;
-      if ((ref$ = React.View.result) != null) {
-        ref$.replaceProps({
-          id: id,
-          type: 'spin'
-        });
+      if (Result != null) {
+        console.log("I should replace props. Result is: ", Result);
+        return Result = React.render(<Result id={id} type="spin" />, $('#result')[0]);
       }
       return setTimeout(function(){
         if (id === '萌' && LANG === 'a') {
@@ -1127,6 +1128,7 @@
       });
     };
     fillJson = function(part, id, cb){
+      console.log("fillJSON called!");
       var reactProps, xrefs, res$, lang, ref$, words;
       part = React.View.decodeLangPart(LANG, part);
       reactProps = null;
@@ -1166,12 +1168,14 @@
         }, $.parseJSON(part));
       }
       if (cb) {
-        return cb(React.renderToString(React.View.Result(reactProps)));
+        return cb(React.renderToString(Result(reactProps)));
       }
-      if (React.View.result) {
-        return (ref$ = React.View.result) != null ? ref$.replaceProps(reactProps, bindHtmlActions) : void 8;
+      if (Result) {
+        console.log("I should replaceProps again.");
+        return (Result) != null ? Result.replaceProps(reactProps, bindHtmlActions) : void 8;
       }
-      return React.View.result = React.render(React.View.Result(reactProps), $('#result')[0], bindHtmlActions);
+      console.log("I should render with new props: ", reactProps);
+      return React.View.result = React.render(< Result />, $('#result')[0], bindHtmlActions);
     };
     fillBucket = function(id, bucket, cb){
       return GET("p" + LANG + "ck/" + bucket + ".txt", function(raw){
