@@ -1,6 +1,9 @@
 import React from 'react';
 import Inlined from './Inlined.jsx';
+import Heteronym from './Heteronym.jsx';
+// TODO: missing component Translations
 // import Translations from './Translations.jsx';
+// TODO: missing component XRefs
 // import XRefs from './XRefs.jsx';
 import { setCurrentId, replace } from './utils';
 
